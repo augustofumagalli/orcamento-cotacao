@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CotaFácil - Sistema Completo</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a24;--blue:#3b82f6;--green:#10b981;--orange:#f59e0b;--purple:#8b5cf6;--red:#ef4444;--text:#f1f5f9;--text2:#94a3b8;--border:#2a2a3a}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+        .header{background:var(--bg2);border-bottom:1px solid var(--border);padding:1rem;position:sticky;top:0;z-index:100}
+        .header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+        .logo{font-size:1.4rem;font-weight:700;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .nav-tabs{display:flex;gap:.25rem;flex-wrap:wrap}
+        .nav-tab{padding:.5rem 1rem;border:none;background:transparent;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;border-radius:6px;transition:.2s}
+        .nav-tab:hover{background:var(--bg3);color:var(--text)}
+        .nav-tab.active{background:var(--blue);color:#fff}
+        .container{max-width:1400px;margin:0 auto;padding:1.5rem}
+        .page{display:none;animation:fadeIn .3s}
+        .page.active{display:block}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        .section-title{font-size:1.4rem;font-weight:700;margin-bottom:.25rem}
+        .section-subtitle{color:var(--text2);font-size:.85rem;margin-bottom:1rem}
+        .card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1rem}
+        .card-title{font-size:.95rem;font-weight:600;margin-bottom:.6rem}
+        .material-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+        .material-tag{display:flex;align-items:center;gap:.3rem;padding:.4rem .7rem;border:2px solid var(--border);border-radius:50px;cursor:pointer;transition:.2s;background:transparent;font-family:inherit;font-size:.8rem;color:var(--text)}
+        .material-tag:hover{border-color:var(--text2)}
+        .material-tag.selected{background:rgba(255,255,255,.05);border-color:var(--blue);color:var(--blue)}
+        .material-dot{width:8px;height:8px;border-radius:50%;background:var(--text2)}
+        .material-tag.selected .material-dot{background:var(--blue)}
+        .checkbox-container{display:flex;align-items:center;gap:.5rem;padding:.6rem;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:.2s;margin-bottom:.3rem}
+        .checkbox-container:hover{border-color:var(--text2)}
+        .checkbox-container.checked{border-color:var(--blue);background:rgba(59,130,246,.1)}
+        .custom-checkbox{width:16px;height:16px;border:2px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .checkbox-container.checked .custom-checkbox{background:var(--blue);border-color:var(--blue)}
+        .custom-checkbox::after{content:'✓';color:#fff;font-size:10px;opacity:0}
+        .checkbox-container.checked .custom-checkbox::after{opacity:1}
+        .checkbox-name{font-weight:500;font-size:.85rem}
+        .checkbox-details{font-size:.7rem;color:var(--text2)}
+        .form-group{margin-bottom:.7rem}
+        .form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.6rem}
+        .form-label{display:block;font-weight:500;margin-bottom:.2rem;color:var(--text2);font-size:.75rem}
+        .form-input,.form-select{width:100%;padding:.5rem .7rem;background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:inherit;font-size:.85rem}
+        .form-input:focus,.form-select:focus{outline:none;border-color:var(--blue)}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:.3rem;padding:.5rem .9rem;border:none;border-radius:5px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s}
+        .btn-primary{background:var(--blue);color:#fff}
+        .btn-primary:hover{background:#2563eb}
+        .btn-success{background:var(--green);color:#fff}
+        .btn-secondary{background:var(--bg2);color:var(--text);border:1px solid var(--border)}
+        .btn-danger{background:var(--red);color:#fff}
+        .btn-purple{background:var(--purple);color:#fff}
+        .btn-orange{background:var(--orange);color:#000}
+        .btn-block{width:100%}
+        .btn-sm{padding:.35rem .6rem;font-size:.75rem}
+        .btn-icon{width:26px;height:26px;padding:0;font-size:.7rem}
+        .btn:disabled{opacity:.5;cursor:not-allowed}
+        .item-list{max-height:250px;overflow-y:auto}
+        .empty-state{text-align:center;padding:1.5rem;color:var(--text2);font-size:.8rem}
+        .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
+        .item-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:.7rem;display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;margin-bottom:.3rem}
+        .item-info h4{font-size:.85rem;margin-bottom:.15rem}
+        .item-info p{font-size:.7rem;color:var(--text2)}
+        .item-info .price{color:var(--green);font-weight:600}
+        .item-actions{display:flex;gap:.2rem}
+        .data-table{width:100%;border-collapse:collapse;font-size:.8rem}
+        .data-table th,.data-table td{padding:.5rem;text-align:left;border-bottom:1px solid var(--border)}
+        .data-table th{color:var(--text2);font-size:.7rem;text-transform:uppercase;background:var(--bg2)}
+        .data-table .qty-input{width:50px;padding:.25rem;text-align:center;font-size:.75rem}
+        .calc-row{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border);font-size:.8rem}
+        .calc-row:last-child{border:none}
+        .calc-row.highlight{background:var(--bg2);margin:0 -.7rem;padding:.5rem .7rem;border-radius:5px}
+        .calc-row .label{color:var(--text2)}
+        .calc-row .value{font-weight:600}
+        .calc-row .green{color:var(--green)}
+        .calc-row .orange{color:var(--orange)}
+        .calc-row .big{font-size:1rem}
+        .search-container{position:relative;margin-bottom:.6rem}
+        .search-input{width:100%;padding:.5rem .7rem .5rem 2rem;background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--text);font-size:.85rem}
+        .search-container::before{content:'🔍';position:absolute;left:.6rem;top:50%;transform:translateY(-50%);font-size:.7rem}
+        .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;visibility:hidden;transition:.3s;padding:1rem;overflow-y:auto}
+        .modal-overlay.active{opacity:1;visibility:visible}
+        .modal{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem;width:100%;max-width:450px;max-height:90vh;overflow-y:auto}
+        .modal-lg{max-width:650px}
+        .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+        .modal-title{font-size:1rem;font-weight:700}
+        .modal-close{width:24px;height:24px;border:none;background:var(--bg2);border-radius:4px;color:var(--text2);cursor:pointer;font-size:.8rem}
+        .modal-footer{display:flex;gap:.5rem;margin-top:1rem}
+        .modal-footer .btn{flex:1}
+        .chip{display:inline-flex;align-items:center;gap:.2rem;padding:.2rem .4rem;background:var(--blue);color:#fff;border-radius:10px;font-size:.7rem;margin:.1rem}
+        .chip-remove{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:12px;height:12px;cursor:pointer;font-size:.5rem}
+        .toast-container{position:fixed;bottom:1rem;right:1rem;z-index:1001}
+        .toast{background:var(--bg3);border:1px solid var(--green);border-radius:6px;padding:.6rem 1rem;margin-top:.3rem;font-size:.8rem;animation:slideIn .3s}
+        .toast.error{border-color:var(--red)}
+        @keyframes slideIn{from{opacity:0;transform:translateX(50px)}to{opacity:1;transform:translateX(0)}}
+        .cotacao-item{display:flex;align-items:center;gap:.5rem;padding:.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:5px;margin-bottom:.3rem;font-size:.8rem}
+        .cotacao-item-info{flex:1}
+        .cotacao-item-name{font-weight:500}
+        .cotacao-item-price{font-size:.65rem;color:var(--green)}
+        .cotacao-item-qty{width:45px;padding:.2rem;text-align:center;font-size:.75rem}
+        .cotacao-item-remove{background:transparent;border:none;color:var(--text2);cursor:pointer}
+        .autocomplete-container{position:relative}
+        .autocomplete-list{position:absolute;top:100%;left:0;right:0;background:var(--bg3);border:1px solid var(--border);border-radius:5px;max-height:150px;overflow-y:auto;z-index:10;display:none}
+        .autocomplete-list.active{display:block}
+        .autocomplete-item{padding:.5rem;cursor:pointer;border-bottom:1px solid var(--border);font-size:.8rem}
+        .autocomplete-item:hover{background:var(--bg2)}
+        .autocomplete-item-new{color:var(--blue);font-style:italic}
+        .cotacao-preview{background:#fff;color:#333;padding:1rem;border-radius:6px;font-size:.85rem}
+        .cotacao-preview h2{font-size:1.1rem;margin-bottom:.3rem}
+        .cotacao-preview table{width:100%;border-collapse:collapse;margin:.5rem 0}
+        .cotacao-preview th,.cotacao-preview td{padding:.4rem;text-align:left;border-bottom:1px solid #ddd}
+        .cotacao-preview th{background:#f5f5f5}
+        .historico-item{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:.7rem;margin-bottom:.4rem;cursor:pointer}
+        .historico-item:hover{border-color:var(--blue)}
+        .historico-item-header{display:flex;justify-content:space-between;margin-bottom:.2rem}
+        .historico-item-title{font-weight:600;font-size:.85rem}
+        .historico-item-date{font-size:.7rem;color:var(--text2)}
+        .historico-item-details{font-size:.75rem;color:var(--text2)}
+        .historico-item-value{font-weight:600;color:var(--green);font-size:.85rem;margin-top:.2rem}
+        .historico-item-actions{display:flex;gap:.3rem;margin-top:.4rem}
+        .tabs-inner{display:flex;gap:.2rem;margin-bottom:.8rem;border-bottom:1px solid var(--border);padding-bottom:.4rem}
+        .tab-inner{padding:.4rem .8rem;border:none;background:transparent;color:var(--text2);font-size:.8rem;cursor:pointer;border-radius:5px}
+        .tab-inner.active{background:var(--bg2);color:var(--text)}
+        .fornecedor-tag{display:inline-block;padding:.15rem .4rem;background:var(--purple);color:#fff;border-radius:3px;font-size:.65rem;margin:.1rem}
+        /* SYNC BAR */
+        .sync-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:.5rem 1rem;display:flex;align-items:center;justify-content:center;gap:1rem;font-size:.8rem}
+        .sync-status{display:flex;align-items:center;gap:.4rem}
+        .sync-dot{width:8px;height:8px;border-radius:50%;background:var(--text2)}
+        .sync-dot.online{background:var(--green);animation:pulse 2s infinite}
+        .sync-dot.syncing{background:var(--orange);animation:pulse .5s infinite}
+        .sync-dot.offline{background:var(--red)}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+        .sync-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:.3rem .6rem;border-radius:4px;cursor:pointer;font-size:.75rem}
+        .sync-btn:hover{background:var(--bg2);border-color:var(--blue)}
+        @media(max-width:768px){.header-content{flex-direction:column}.grid-2{grid-template-columns:1fr}.form-row{grid-template-columns:1fr 1fr}}
+    </style>
+</head>
+<body>
+    <!-- SYNC BAR -->
+    <div class="sync-bar">
+        <div class="sync-status">
+            <span class="sync-dot" id="sync-dot"></span>
+            <span id="sync-text">Conectando...</span>
+        </div>
+        <span style="font-size:.7rem;color:var(--text2)">Auto: 5s</span>
+        <button class="sync-btn" onclick="syncNow()">⟳ Sincronizar</button>
+        <button class="sync-btn" onclick="openModal('modal-sync')">⚙️ Config</button>
+    </div>
+
+    <header class="header"><div class="header-content"><div class="logo">CotaFácil ☁️</div><nav class="nav-tabs"><button class="nav-tab active" data-page="cotacao">Cotação</button><button class="nav-tab" data-page="orcamento">Orçamento</button><button class="nav-tab" data-page="produtos">Produtos</button><button class="nav-tab" data-page="fornecedores">Fornecedores</button></nav></div></header>
+    <main class="container">
+        <!-- COTAÇÃO -->
+        <div class="page active" id="page-cotacao">
+            <h1 class="section-title">Cotação</h1>
+            <p class="section-subtitle">Crie cotações para múltiplos fornecedores</p>
+            <div class="tabs-inner"><button class="tab-inner active" data-tab="nova-cotacao">Nova</button><button class="tab-inner" data-tab="historico-cotacao">Histórico</button></div>
+            <div id="tab-nova-cotacao">
+                <div class="grid-2">
+                    <div>
+                        <div class="card"><h3 class="card-title">Material</h3><div class="material-tags" id="cotacao-material-tags"><button class="material-tag" data-material="aluminio"><span class="material-dot"></span>Alumínio</button><button class="material-tag" data-material="galvanizado"><span class="material-dot"></span>Aço Galv.</button><button class="material-tag" data-material="carbono"><span class="material-dot"></span>Aço Carb.</button><button class="material-tag" data-material="inox"><span class="material-dot"></span>Inox</button></div></div>
+                        <div class="card"><h3 class="card-title">Adicionar Produto</h3><div class="autocomplete-container"><input type="text" class="form-input" id="cotacao-produto-input" placeholder="Nome do produto..."><div class="autocomplete-list" id="cotacao-autocomplete"></div></div><div class="form-row" style="margin-top:.5rem"><div class="form-group" style="margin:0"><label class="form-label">Qtd</label><input type="number" class="form-input" id="cotacao-produto-qty" value="1" min="1"></div><div class="form-group" style="margin:0"><label class="form-label">Preço</label><input type="text" class="form-input" id="cotacao-produto-preco" placeholder="0,00"></div><div class="form-group" style="margin:0;display:flex;align-items:flex-end"><button class="btn btn-primary btn-block btn-sm" id="btn-add-cotacao">Add</button></div></div></div>
+                        <div class="card"><h3 class="card-title">Fornecedores (múltiplos)</h3><div class="item-list" id="cotacao-fornecedores"><div class="empty-state">Selecione material</div></div></div>
+                    </div>
+                    <div>
+                        <div class="card"><h3 class="card-title">Itens</h3><div id="cotacao-itens-list"><div class="empty-state">Adicione produtos</div></div></div>
+                        <div class="card"><h3 class="card-title">Selecionados</h3><div id="fornecedores-selecionados"><div class="empty-state">Selecione fornecedores</div></div></div>
+                        <button class="btn btn-purple btn-block" id="btn-gerar-cotacao" disabled>Gerar Cotação</button>
+                    </div>
+                </div>
+            </div>
+            <div id="tab-historico-cotacao" style="display:none"><div class="card"><div class="search-container"><input type="text" class="search-input" id="busca-hist-cot" placeholder="Buscar..."></div><div id="lista-hist-cot"><div class="empty-state">Nenhuma cotação</div></div></div></div>
+        </div>
+
+        <!-- ORÇAMENTO -->
+        <div class="page" id="page-orcamento">
+            <h1 class="section-title">Orçamento de Venda</h1>
+            <p class="section-subtitle">Monte orçamentos com cálculo de margem</p>
+            <div class="tabs-inner"><button class="tab-inner active" data-tab="novo-orcamento">Novo</button><button class="tab-inner" data-tab="historico-orcamento">Histórico</button></div>
+            <div id="tab-novo-orcamento">
+                <div class="grid-2">
+                    <div>
+                        <div class="card"><h3 class="card-title">Informações</h3><div class="form-row"><div class="form-group"><label class="form-label">Cliente</label><input type="text" class="form-input" id="orc-cliente" placeholder="Nome"></div><div class="form-group"><label class="form-label">Data</label><input type="date" class="form-input" id="orc-data"></div></div><div class="form-row"><div class="form-group"><label class="form-label">Produto/Serviço</label><input type="text" class="form-input" id="orc-produto" placeholder="Ex: Tampa caixa d'água"></div><div class="form-group"><label class="form-label">Quantidade</label><input type="number" class="form-input" id="orc-qtd" value="1" min="1"></div></div><div class="form-group"><label class="form-label">Tipo de Cálculo</label><select class="form-select" id="orc-tipo-calc"><option value="geral">Geral (soma tudo ÷ quantidade)</option><option value="unitario">Unitário (multiplica no final)</option></select></div></div>
+                        <div class="card"><h3 class="card-title">Materiais</h3><div class="search-container"><input type="text" class="search-input" id="busca-prod-orc" placeholder="Buscar..."></div><div class="item-list" id="lista-prod-orc"><div class="empty-state">Nenhum produto</div></div></div>
+                    </div>
+                    <div>
+                        <div class="card"><h3 class="card-title">Itens</h3><div id="orc-itens-cont"><div class="empty-state" id="orc-empty">Adicione materiais</div><table class="data-table" id="orc-table" style="display:none"><thead><tr><th>Material</th><th>Qtd</th><th id="th-qtd-total" style="display:none">Qtd Total</th><th>Unit.</th><th>Total</th><th id="th-total-geral" style="display:none">Total Geral</th><th></th></tr></thead><tbody id="orc-tbody"></tbody></table></div></div>
+                        <div class="card"><h3 class="card-title">Cálculo</h3><div class="calc-row"><span class="label">Total Material</span><span class="value" id="c-mat">R$ 0,00</span></div><div class="form-row" style="margin:.5rem 0"><div class="form-group" style="margin:0"><label class="form-label">Consumíveis %</label><input type="number" class="form-input" id="c-cons-pct" value="10"></div><div class="form-group" style="margin:0"><label class="form-label">Valor</label><input type="text" class="form-input" id="c-cons-val" readonly></div></div><div class="form-row" style="margin:.5rem 0"><div class="form-group" style="margin:0"><label class="form-label">Mão de Obra %</label><input type="number" class="form-input" id="c-mo-pct" value="250"></div><div class="form-group" style="margin:0"><label class="form-label">Valor</label><input type="text" class="form-input" id="c-mo-val" readonly></div></div><div class="calc-row highlight"><span class="label">Custo Total</span><span class="value orange" id="c-custo">R$ 0,00</span></div><div class="calc-row"><span class="label">Custo Unitário</span><span class="value" id="c-custo-u">R$ 0,00</span></div><hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0"><div class="form-row" style="margin:.5rem 0"><div class="form-group" style="margin:0"><label class="form-label">Frete R$</label><input type="text" class="form-input" id="c-frete" placeholder="0,00"></div><div class="form-group" style="margin:0"><label class="form-label">Pintura R$</label><input type="text" class="form-input" id="c-pintura" placeholder="0,00"></div></div><div class="form-row" style="margin:.5rem 0"><div class="form-group" style="margin:0"><label class="form-label">Outras R$</label><input type="text" class="form-input" id="c-outras" placeholder="0,00"></div><div class="form-group" style="margin:0"><label class="form-label">Desp/Unid</label><input type="text" class="form-input" id="c-desp-u" readonly></div></div><hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0"><div class="calc-row"><span class="label">VALOR UNITÁRIO</span><span class="value green" id="c-val-u">R$ 0,00</span></div><div class="calc-row highlight"><span class="label">VALOR TOTAL</span><span class="value green big" id="c-val-total">R$ 0,00</span></div><div class="calc-row"><span class="label">Margem Lucro</span><span class="value" id="c-margem">0,00%</span></div></div>
+                        <div style="display:flex;gap:.5rem"><button class="btn btn-secondary" id="btn-limpar-orc" style="flex:1">Limpar</button><button class="btn btn-success" id="btn-salvar-orc" style="flex:1">Salvar</button></div>
+                    </div>
+                </div>
+            </div>
+            <div id="tab-historico-orcamento" style="display:none"><div class="card"><div class="search-container"><input type="text" class="search-input" id="busca-hist-orc" placeholder="Buscar cliente/produto..."></div><div id="lista-hist-orc"><div class="empty-state">Nenhum orçamento</div></div></div></div>
+        </div>
+
+        <!-- PRODUTOS -->
+        <div class="page" id="page-produtos">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem"><div><h1 class="section-title">Produtos</h1><p class="section-subtitle">Cadastre produtos com preço</p></div><button class="btn btn-primary" id="btn-novo-produto">Novo</button></div>
+            <div class="card"><div class="search-container"><input type="text" class="search-input" id="busca-produto" placeholder="Buscar..."></div><div id="lista-produtos"><div class="empty-state">Nenhum produto</div></div></div>
+        </div>
+
+        <!-- FORNECEDORES -->
+        <div class="page" id="page-fornecedores">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem"><div><h1 class="section-title">Fornecedores</h1><p class="section-subtitle">Gerencie fornecedores</p></div><button class="btn btn-primary" id="btn-novo-fornecedor">Novo</button></div>
+            <div class="card"><div class="search-container"><input type="text" class="search-input" id="busca-fornecedor" placeholder="Buscar..."></div><div id="lista-fornecedores"><div class="empty-state">Nenhum fornecedor</div></div></div>
+        </div>
+    </main>
+
+    <!-- MODAIS -->
+    <div class="modal-overlay" id="modal-fornecedor"><div class="modal"><div class="modal-header"><h3 class="modal-title" id="modal-forn-title">Novo Fornecedor</h3><button class="modal-close" onclick="closeModal('modal-fornecedor')">×</button></div><form id="form-fornecedor"><div class="form-group"><label class="form-label">Nome *</label><input type="text" class="form-input" id="forn-nome" required></div><div class="form-row"><div class="form-group"><label class="form-label">Atendente</label><input type="text" class="form-input" id="forn-atend"></div><div class="form-group"><label class="form-label">WhatsApp *</label><input type="tel" class="form-input" id="forn-whats" required></div></div><div class="form-group"><label class="form-label">Materiais *</label><div class="material-tags" id="modal-forn-mat"><button type="button" class="material-tag" data-material="aluminio"><span class="material-dot"></span>Alum.</button><button type="button" class="material-tag" data-material="galvanizado"><span class="material-dot"></span>Galv.</button><button type="button" class="material-tag" data-material="carbono"><span class="material-dot"></span>Carb.</button><button type="button" class="material-tag" data-material="inox"><span class="material-dot"></span>Inox</button></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('modal-fornecedor')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
+
+    <div class="modal-overlay" id="modal-produto"><div class="modal"><div class="modal-header"><h3 class="modal-title" id="modal-prod-title">Novo Produto</h3><button class="modal-close" onclick="closeModal('modal-produto')">×</button></div><form id="form-produto"><div class="form-group"><label class="form-label">Nome *</label><input type="text" class="form-input" id="prod-nome" required></div><div class="form-row"><div class="form-group"><label class="form-label">Preço *</label><input type="text" class="form-input" id="prod-preco" required></div><div class="form-group"><label class="form-label">Unidade</label><select class="form-select" id="prod-unid"><option value="un">Unidade</option><option value="m">Metro</option><option value="kg">Quilo</option><option value="br">Barra</option></select></div></div><div class="form-group"><label class="form-label">Material</label><div class="material-tags" id="modal-prod-mat"><button type="button" class="material-tag" data-material="aluminio"><span class="material-dot"></span>Alum.</button><button type="button" class="material-tag" data-material="galvanizado"><span class="material-dot"></span>Galv.</button><button type="button" class="material-tag" data-material="carbono"><span class="material-dot"></span>Carb.</button><button type="button" class="material-tag" data-material="inox"><span class="material-dot"></span>Inox</button></div></div><div class="form-group"><label class="form-label">Fornecedores</label><div id="prod-forn-chips" style="display:flex;flex-wrap:wrap;gap:.2rem;min-height:30px;padding:.3rem;background:var(--bg2);border-radius:4px"></div><select class="form-select" id="prod-forn-sel" style="margin-top:.3rem"><option value="">+ Adicionar...</option></select></div><div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('modal-produto')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
+
+    <div class="modal-overlay" id="modal-cotacao"><div class="modal modal-lg"><div class="modal-header"><h3 class="modal-title">Cotações</h3><button class="modal-close" onclick="closeModal('modal-cotacao')">×</button></div><div id="cotacao-preview"></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-cotacao')">Fechar</button><button class="btn btn-success" id="btn-salvar-cot">Salvar</button></div></div></div>
+
+    <div class="modal-overlay" id="modal-preco"><div class="modal"><div class="modal-header"><h3 class="modal-title">Atualizar Preço?</h3><button class="modal-close" onclick="closeModal('modal-preco')">×</button></div><p style="font-size:.85rem">Produto: <strong id="upd-nome"></strong></p><p style="font-size:.85rem">Atual: <strong id="upd-atual"></strong></p><p style="font-size:.85rem">Novo: <strong id="upd-novo"></strong></p><div class="modal-footer"><button class="btn btn-secondary" id="btn-manter">Manter</button><button class="btn btn-primary" id="btn-atualizar">Atualizar</button></div></div></div>
+
+    <div class="modal-overlay" id="modal-ver-orc"><div class="modal modal-lg"><div class="modal-header"><h3 class="modal-title">Orçamento</h3><button class="modal-close" onclick="closeModal('modal-ver-orc')">×</button></div><div id="ver-orc-content"></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-ver-orc')">Fechar</button><button class="btn btn-orange" onclick="window.print()">Imprimir</button></div></div></div>
+
+    <!-- MODAL SYNC CONFIG -->
+    <div class="modal-overlay" id="modal-sync"><div class="modal"><div class="modal-header"><h3 class="modal-title">☁️ Sincronização na Nuvem</h3><button class="modal-close" onclick="closeModal('modal-sync')">×</button></div>
+    <div class="form-group"><label class="form-label">Status</label><div style="padding:.5rem;background:var(--bg2);border-radius:4px;font-size:.85rem" id="sync-status-detail">Verificando...</div></div>
+    <div class="form-group"><label class="form-label">Última Sincronização</label><div style="padding:.5rem;background:var(--bg2);border-radius:4px;font-size:.85rem" id="sync-last">-</div></div>
+    <div class="form-group"><label class="form-label">BIN ID</label><input type="text" class="form-input" id="sync-bin-id" placeholder="ID do BIN (deixe vazio para criar novo)"></div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-sync')">Fechar</button><button class="btn btn-primary" onclick="forceCloudLoad()">⬇️ Baixar Nuvem</button><button class="btn btn-success" onclick="forceCloudSave()">⬆️ Enviar</button></div>
+    </div></div>
+
+    <div class="toast-container" id="toasts"></div>
+
+    <script>
+// ==================== JSONBIN CONFIG ====================
+const JSONBIN_API = 'https://api.jsonbin.io/v3/b';
+const JSONBIN_KEY = '$2a$10$kzv9sdc0Qx4Pl5DTyB6WB.O6wjxTCcy51HnDghEE55bavmyRSeO7a';
+const DEFAULT_BIN = '6989f792ae596e708f1dc34f';
+let currentBinId = localStorage.getItem('cotafacil_bin_id') || DEFAULT_BIN;
+let syncStatus = 'offline';
+let lastSync = localStorage.getItem('cotafacil_last_sync') || null;
+let lastCloudUpdate = null; // Para detectar mudanças de outros dispositivos
+let syncInterval = null;
+const SYNC_INTERVAL_MS = 5000; // Verifica a cada 5 segundos
+
+// ==================== ESTADO ====================
+let fornecedores=JSON.parse(localStorage.getItem('fornecedores'))||[];
+let produtos=JSON.parse(localStorage.getItem('produtos'))||[];
+let histCot=JSON.parse(localStorage.getItem('histCot'))||[];
+let histOrc=JSON.parse(localStorage.getItem('histOrc'))||[];
+let orcItens=[],cotItens=[],selMatCot=[],selFornCot=[],selFornProd=[],editFornId=null,editProdId=null,pendUpd=null,currCot=null;
+
+// ==================== SYNC FUNCTIONS ====================
+function updateSyncUI(status, text) {
+    syncStatus = status;
+    const dot = document.getElementById('sync-dot');
+    const txt = document.getElementById('sync-text');
+    dot.className = 'sync-dot ' + status;
+    txt.textContent = text;
+    
+    const detail = document.getElementById('sync-status-detail');
+    if (detail) {
+        detail.textContent = text;
+        detail.style.color = status === 'online' ? 'var(--green)' : status === 'syncing' ? 'var(--orange)' : 'var(--red)';
+    }
+    
+    const lastEl = document.getElementById('sync-last');
+    if (lastEl && lastSync) {
+        lastEl.textContent = new Date(lastSync).toLocaleString('pt-BR');
+    }
+    
+    const binInput = document.getElementById('sync-bin-id');
+    if (binInput) binInput.value = currentBinId;
+}
+
+async function cloudSave() {
+    if (!currentBinId) return;
+    updateSyncUI('syncing', 'Salvando...');
+    
+    try {
+        const data = {
+            fornecedores,
+            produtos,
+            histCot,
+            histOrc,
+            updatedAt: new Date().toISOString()
+        };
+        
+        const response = await fetch(`${JSONBIN_API}/${currentBinId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_KEY
+            },
+            body: JSON.stringify(data)
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            lastCloudUpdate = data.updatedAt;
+            lastSync = new Date().toISOString();
+            localStorage.setItem('cotafacil_last_sync', lastSync);
+            updateSyncUI('online', 'Sincronizado ✓');
+        } else {
+            throw new Error('Erro ao salvar');
+        }
+    } catch (e) {
+        console.error('Erro cloud save:', e);
+        updateSyncUI('offline', 'Erro ao salvar');
+    }
+}
+
+async function cloudLoad(silent = false) {
+    if (!currentBinId) return;
+    if (!silent) updateSyncUI('syncing', 'Carregando...');
+    
+    try {
+        const response = await fetch(`${JSONBIN_API}/${currentBinId}/latest`, {
+            headers: {
+                'X-Master-Key': JSONBIN_KEY
+            }
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            const data = result.record;
+            
+            if (data) {
+                // Verifica se há dados mais novos na nuvem
+                const cloudTime = data.updatedAt ? new Date(data.updatedAt).getTime() : 0;
+                const localTime = lastCloudUpdate ? new Date(lastCloudUpdate).getTime() : 0;
+                
+                if (cloudTime > localTime || !silent) {
+                    // Dados da nuvem são mais recentes, atualiza local
+                    if (data.fornecedores) fornecedores = data.fornecedores;
+                    if (data.produtos) produtos = data.produtos;
+                    if (data.histCot) histCot = data.histCot;
+                    if (data.histOrc) histOrc = data.histOrc;
+                    
+                    lastCloudUpdate = data.updatedAt;
+                    saveLocal();
+                    renderAll();
+                    
+                    if (!silent) toast('Dados carregados da nuvem!');
+                }
+                
+                lastSync = new Date().toISOString();
+                localStorage.setItem('cotafacil_last_sync', lastSync);
+                updateSyncUI('online', 'Sincronizado ✓');
+            }
+        } else {
+            throw new Error('Erro ao carregar');
+        }
+    } catch (e) {
+        console.error('Erro cloud load:', e);
+        if (!silent) updateSyncUI('offline', 'Erro ao carregar');
+    }
+}
+
+// Polling - verifica mudanças de outros dispositivos periodicamente
+function startSyncPolling() {
+    if (syncInterval) clearInterval(syncInterval);
+    syncInterval = setInterval(() => {
+        if (syncStatus !== 'offline') { // Só faz polling se não estiver offline
+            cloudLoad(true); // silent = true, não mostra toast
+        }
+    }, SYNC_INTERVAL_MS);
+    console.log('Sync polling iniciado - verificando a cada', SYNC_INTERVAL_MS/1000, 'segundos');
+}
+
+function stopSyncPolling() {
+    if (syncInterval) {
+        clearInterval(syncInterval);
+        syncInterval = null;
+    }
+}
+
+async function createNewBin() {
+    updateSyncUI('syncing', 'Criando BIN...');
+    
+    try {
+        const data = {
+            fornecedores,
+            produtos,
+            histCot,
+            histOrc,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+        
+        const response = await fetch('https://api.jsonbin.io/v3/b', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_KEY,
+                'X-Bin-Name': 'CotaFacil-' + Date.now()
+            },
+            body: JSON.stringify(data)
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            currentBinId = result.metadata.id;
+            localStorage.setItem('cotafacil_bin_id', currentBinId);
+            lastCloudUpdate = data.updatedAt;
+            lastSync = new Date().toISOString();
+            localStorage.setItem('cotafacil_last_sync', lastSync);
+            updateSyncUI('online', 'BIN criado ✓');
+            toast('Novo BIN criado: ' + currentBinId);
+            startSyncPolling();
+        } else {
+            throw new Error('Erro ao criar BIN');
+        }
+    } catch (e) {
+        console.error('Erro create bin:', e);
+        updateSyncUI('offline', 'Erro ao criar BIN');
+    }
+}
+
+function syncNow() {
+    cloudSave();
+}
+
+function forceCloudLoad() {
+    const newBinId = document.getElementById('sync-bin-id').value.trim();
+    if (newBinId && newBinId !== currentBinId) {
+        currentBinId = newBinId;
+        localStorage.setItem('cotafacil_bin_id', currentBinId);
+        lastCloudUpdate = null; // Reset para forçar atualização
+    }
+    cloudLoad();
+    closeModal('modal-sync');
+}
+
+function forceCloudSave() {
+    const newBinId = document.getElementById('sync-bin-id').value.trim();
+    if (newBinId && newBinId !== currentBinId) {
+        currentBinId = newBinId;
+        localStorage.setItem('cotafacil_bin_id', currentBinId);
+    }
+    cloudSave();
+    closeModal('modal-sync');
+}
+
+// Debounce para sync automático
+let syncTimeout = null;
+function scheduleSync() {
+    if (syncTimeout) clearTimeout(syncTimeout);
+    syncTimeout = setTimeout(() => {
+        cloudSave();
+    }, 2000); // Sync 2 segundos após última alteração
+}
+
+// ==================== UTILS ====================
+const fmtMoney=v=>(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const parseMoney=s=>parseFloat((s||'').replace(/[^\d,.-]/g,'').replace(',','.'))||0;
+const fmtPhone=p=>{const c=(p||'').replace(/\D/g,'');return c.length===11?`(${c.slice(0,2)}) ${c.slice(2,7)}-${c.slice(7)}`:p};
+const fmtDate=d=>d?new Date(d).toLocaleDateString('pt-BR'):'';
+const fmtDateTime=d=>d?new Date(d).toLocaleString('pt-BR'):'';
+const getMatLabel=m=>({aluminio:'Alumínio',galvanizado:'Aço Galv.',carbono:'Aço Carb.',inox:'Inox'})[m]||m;
+
+// Save local + schedule cloud sync
+const saveLocal=()=>{
+    localStorage.setItem('fornecedores',JSON.stringify(fornecedores));
+    localStorage.setItem('produtos',JSON.stringify(produtos));
+    localStorage.setItem('histCot',JSON.stringify(histCot));
+    localStorage.setItem('histOrc',JSON.stringify(histOrc));
+};
+
+const save=()=>{
+    saveLocal();
+    scheduleSync();
+};
+
+const renderAll=()=>{
+    renderForn();
+    renderProd();
+    renderProdOrc();
+    updProdFornSel();
+    renderCotForn();
+    calcOrc();
+};
+
+const openModal=id=>{document.getElementById(id).classList.add('active');document.body.style.overflow='hidden'};
+const closeModal=id=>{document.getElementById(id).classList.remove('active');document.body.style.overflow=''};
+const toast=(m,t='success')=>{const c=document.getElementById('toasts'),e=document.createElement('div');e.className=`toast ${t}`;e.textContent=m;c.appendChild(e);setTimeout(()=>e.remove(),3000)};
+
+// Mask
+document.querySelectorAll('#prod-preco,#cotacao-produto-preco,#c-frete,#c-pintura,#c-outras').forEach(i=>{i.addEventListener('input',e=>{let v=e.target.value.replace(/\D/g,'');if(!v){e.target.value='';return}v=(parseInt(v)/100).toFixed(2).replace('.',',');e.target.value=v})});
+
+// Nav
+document.querySelectorAll('.nav-tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');if(p.id===`page-${t.dataset.page}`)p.classList.add('active')})})});
+document.querySelectorAll('.tab-inner').forEach(t=>{t.addEventListener('click',()=>{const p=t.parentElement;p.querySelectorAll('.tab-inner').forEach(x=>x.classList.remove('active'));t.classList.add('active');const c=p.parentElement;c.querySelectorAll('[id^="tab-"]').forEach(x=>x.style.display='none');document.getElementById(`tab-${t.dataset.tab}`).style.display='block';if(t.dataset.tab==='historico-cotacao')renderHistCot();if(t.dataset.tab==='historico-orcamento')renderHistOrc()})});
+
+// FORNECEDORES
+document.getElementById('btn-novo-fornecedor').addEventListener('click',()=>{editFornId=null;document.getElementById('modal-forn-title').textContent='Novo Fornecedor';document.getElementById('form-fornecedor').reset();document.querySelectorAll('#modal-forn-mat .material-tag').forEach(t=>t.classList.remove('selected'));openModal('modal-fornecedor')});
+document.querySelectorAll('#modal-forn-mat .material-tag').forEach(t=>{t.addEventListener('click',()=>t.classList.toggle('selected'))});
+document.getElementById('form-fornecedor').addEventListener('submit',e=>{e.preventDefault();const nome=document.getElementById('forn-nome').value.trim(),atend=document.getElementById('forn-atend').value.trim(),whats=document.getElementById('forn-whats').value.replace(/\D/g,''),mats=[...document.querySelectorAll('#modal-forn-mat .material-tag.selected')].map(t=>t.dataset.material);if(!nome||!whats||!mats.length){toast('Preencha campos','error');return}if(editFornId){const i=fornecedores.findIndex(f=>f.id===editFornId);if(i!==-1)fornecedores[i]={...fornecedores[i],nome,atend,whats,mats};toast('Atualizado!')}else{fornecedores.push({id:Date.now().toString(),nome,atend,whats,mats});toast('Cadastrado!')}save();renderForn();renderCotForn();updProdFornSel();closeModal('modal-fornecedor')});
+window.editForn=id=>{const f=fornecedores.find(x=>x.id===id);if(!f)return;editFornId=id;document.getElementById('modal-forn-title').textContent='Editar';document.getElementById('forn-nome').value=f.nome;document.getElementById('forn-atend').value=f.atend||'';document.getElementById('forn-whats').value=f.whats;document.querySelectorAll('#modal-forn-mat .material-tag').forEach(t=>t.classList.toggle('selected',f.mats.includes(t.dataset.material)));openModal('modal-fornecedor')};
+window.delForn=id=>{if(!confirm('Excluir?'))return;fornecedores=fornecedores.filter(f=>f.id!==id);produtos.forEach(p=>p.forns=(p.forns||[]).filter(x=>x!==id));save();renderForn();renderProd();renderCotForn();toast('Excluído')};
+function renderForn(f=''){const c=document.getElementById('lista-fornecedores'),fil=fornecedores.filter(x=>x.nome.toLowerCase().includes(f.toLowerCase()));if(!fil.length){c.innerHTML='<div class="empty-state">Nenhum fornecedor</div>';return}c.innerHTML=fil.map(x=>`<div class="item-card"><div class="item-info"><h4>${x.nome}</h4><p>${x.atend?x.atend+' • ':''}${fmtPhone(x.whats)}</p></div><div class="item-actions"><button class="btn btn-secondary btn-icon" onclick="editForn('${x.id}')">✎</button><button class="btn btn-danger btn-icon" onclick="delForn('${x.id}')">×</button></div></div>`).join('')}
+document.getElementById('busca-fornecedor').addEventListener('input',e=>renderForn(e.target.value));
+
+// PRODUTOS
+document.getElementById('btn-novo-produto').addEventListener('click',()=>{editProdId=null;selFornProd=[];document.getElementById('modal-prod-title').textContent='Novo Produto';document.getElementById('form-produto').reset();document.querySelectorAll('#modal-prod-mat .material-tag').forEach(t=>t.classList.remove('selected'));renderProdFornChips();openModal('modal-produto')});
+document.querySelectorAll('#modal-prod-mat .material-tag').forEach(t=>{t.addEventListener('click',()=>t.classList.toggle('selected'))});
+function updProdFornSel(){const s=document.getElementById('prod-forn-sel');s.innerHTML='<option value="">+ Adicionar...</option>';fornecedores.forEach(f=>{if(!selFornProd.includes(f.id))s.innerHTML+=`<option value="${f.id}">${f.nome}</option>`})}
+document.getElementById('prod-forn-sel').addEventListener('change',e=>{if(e.target.value){selFornProd.push(e.target.value);renderProdFornChips();e.target.value=''}});
+function renderProdFornChips(){const c=document.getElementById('prod-forn-chips');c.innerHTML=selFornProd.map(id=>{const f=fornecedores.find(x=>x.id===id);return f?`<span class="chip">${f.nome}<button type="button" class="chip-remove" onclick="remProdForn('${id}')">×</button></span>`:''}).join('');updProdFornSel()}
+window.remProdForn=id=>{selFornProd=selFornProd.filter(x=>x!==id);renderProdFornChips()};
+document.getElementById('form-produto').addEventListener('submit',e=>{e.preventDefault();const nome=document.getElementById('prod-nome').value.trim(),preco=parseMoney(document.getElementById('prod-preco').value),unid=document.getElementById('prod-unid').value,mats=[...document.querySelectorAll('#modal-prod-mat .material-tag.selected')].map(t=>t.dataset.material);if(!nome||preco<=0){toast('Preencha nome e preço','error');return}const dt=new Date().toISOString();if(editProdId){const i=produtos.findIndex(p=>p.id===editProdId);if(i!==-1)produtos[i]={...produtos[i],nome,preco,unid,mats,forns:selFornProd,dt};toast('Atualizado!')}else{produtos.push({id:Date.now().toString(),nome,preco,unid,mats,forns:selFornProd,dt});toast('Cadastrado!')}save();renderProd();renderProdOrc();closeModal('modal-produto')});
+window.editProd=id=>{const p=produtos.find(x=>x.id===id);if(!p)return;editProdId=id;selFornProd=[...(p.forns||[])];document.getElementById('modal-prod-title').textContent='Editar';document.getElementById('prod-nome').value=p.nome;document.getElementById('prod-preco').value=p.preco.toFixed(2).replace('.',',');document.getElementById('prod-unid').value=p.unid||'un';document.querySelectorAll('#modal-prod-mat .material-tag').forEach(t=>t.classList.toggle('selected',(p.mats||[]).includes(t.dataset.material)));renderProdFornChips();openModal('modal-produto')};
+window.delProd=id=>{if(!confirm('Excluir?'))return;produtos=produtos.filter(p=>p.id!==id);save();renderProd();renderProdOrc();toast('Excluído')};
+function renderProd(f=''){const c=document.getElementById('lista-produtos'),fil=produtos.filter(p=>p.nome.toLowerCase().includes(f.toLowerCase())||((p.forns||[]).map(fid=>fornecedores.find(x=>x.id===fid)).filter(Boolean).some(fn=>fn.nome.toLowerCase().includes(f.toLowerCase()))));if(!fil.length){c.innerHTML='<div class="empty-state">Nenhum produto</div>';return}c.innerHTML=fil.map(p=>{const fns=(p.forns||[]).map(fid=>fornecedores.find(x=>x.id===fid)).filter(Boolean);return `<div class="item-card"><div class="item-info"><h4>${p.nome}</h4><p class="price">${fmtMoney(p.preco)}/${p.unid||'un'}</p>${fns.length?`<p style="font-size:.75rem;color:var(--purple);margin-top:.2rem">📦 ${fns.map(f=>f.nome).join(', ')}</p>`:''}${p.dt?`<p style="font-size:.65rem;color:var(--orange)">Atualizado: ${fmtDate(p.dt)}</p>`:''}</div><div class="item-actions"><button class="btn btn-secondary btn-icon" onclick="editProd('${p.id}')">✎</button><button class="btn btn-danger btn-icon" onclick="delProd('${p.id}')">×</button></div></div>`}).join('')}
+document.getElementById('busca-produto').addEventListener('input',e=>renderProd(e.target.value));
+
+// COTAÇÃO
+document.querySelectorAll('#cotacao-material-tags .material-tag').forEach(t=>{t.addEventListener('click',()=>{t.classList.toggle('selected');selMatCot=[...document.querySelectorAll('#cotacao-material-tags .material-tag.selected')].map(x=>x.dataset.material);selFornCot=[];renderCotForn();renderSelForn()})});
+function renderCotForn(){const c=document.getElementById('cotacao-fornecedores');if(!selMatCot.length){c.innerHTML='<div class="empty-state">Selecione material</div>';updBtnCot();return}const fil=fornecedores.filter(f=>f.mats.some(m=>selMatCot.includes(m)));if(!fil.length){c.innerHTML='<div class="empty-state">Nenhum fornecedor</div>';updBtnCot();return}c.innerHTML=fil.map(f=>`<div class="checkbox-container${selFornCot.find(x=>x.id===f.id)?' checked':''}" data-id="${f.id}"><div class="custom-checkbox"></div><div><div class="checkbox-name">${f.nome}</div><div class="checkbox-details">${f.atend?f.atend+' • ':''}${fmtPhone(f.whats)}</div></div></div>`).join('');c.querySelectorAll('.checkbox-container').forEach(el=>{el.addEventListener('click',()=>{el.classList.toggle('checked');const fn=fornecedores.find(x=>x.id===el.dataset.id);if(el.classList.contains('checked')){if(!selFornCot.find(x=>x.id===fn.id))selFornCot.push(fn)}else{selFornCot=selFornCot.filter(x=>x.id!==fn.id)}renderSelForn();updBtnCot()})});updBtnCot()}
+function renderSelForn(){const c=document.getElementById('fornecedores-selecionados');if(!selFornCot.length){c.innerHTML='<div class="empty-state">Selecione fornecedores</div>';return}c.innerHTML=selFornCot.map(f=>`<span class="fornecedor-tag">${f.nome}</span>`).join('')}
+
+// Autocomplete
+const cotIn=document.getElementById('cotacao-produto-input'),cotAuto=document.getElementById('cotacao-autocomplete');
+cotIn.addEventListener('input',()=>{const v=cotIn.value.trim().toLowerCase();if(!v){cotAuto.classList.remove('active');return}const m=produtos.filter(p=>p.nome.toLowerCase().includes(v)||((p.forns||[]).map(fid=>fornecedores.find(x=>x.id===fid)).filter(Boolean).some(fn=>fn.nome.toLowerCase().includes(v)))).slice(0,8);let h=m.map(p=>{const fns=(p.forns||[]).map(fid=>fornecedores.find(x=>x.id===fid)).filter(Boolean);return `<div class="autocomplete-item" data-id="${p.id}"><div class="autocomplete-item-name">${p.nome}</div><div style="font-size:.7rem;color:var(--green)">${fmtMoney(p.preco)}</div>${fns.length?`<div style="font-size:.65rem;color:var(--purple)">📦 ${fns.map(f=>f.nome).join(', ')}</div>`:''}</div>`}).join('');if(!produtos.find(p=>p.nome.toLowerCase()===v))h+=`<div class="autocomplete-item autocomplete-item-new" data-new="1">+ Criar: "${cotIn.value.trim()}"</div>`;cotAuto.innerHTML=h;cotAuto.classList.add('active');cotAuto.querySelectorAll('.autocomplete-item').forEach(it=>{it.addEventListener('click',()=>{if(it.dataset.new){cotIn.value=cotIn.value.trim()}else{const pr=produtos.find(p=>p.id===it.dataset.id);if(pr){cotIn.value=pr.nome;cotIn.dataset.prodId=pr.id;document.getElementById('cotacao-produto-preco').value=pr.preco.toFixed(2).replace('.',',')}}cotAuto.classList.remove('active')})})});
+cotIn.addEventListener('blur',()=>setTimeout(()=>cotAuto.classList.remove('active'),200));
+document.getElementById('btn-add-cotacao').addEventListener('click',()=>{const nome=cotIn.value.trim(),qty=parseInt(document.getElementById('cotacao-produto-qty').value)||1,preco=parseMoney(document.getElementById('cotacao-produto-preco').value);if(!nome){toast('Digite produto','error');return}const ex=produtos.find(p=>p.nome.toLowerCase()===nome.toLowerCase());if(ex&&preco>0&&Math.abs(preco-ex.preco)>0.01){pendUpd={prod:ex,novo:preco,nome,qty};document.getElementById('upd-nome').textContent=ex.nome;document.getElementById('upd-atual').textContent=fmtMoney(ex.preco);document.getElementById('upd-novo').textContent=fmtMoney(preco);openModal('modal-preco');return}if(ex){addCot(nome,qty,ex.preco,ex.id)}else if(preco>0){const np={id:Date.now().toString(),nome,preco,unid:'un',mats:selMatCot,forns:selFornCot.map(f=>f.id),dt:new Date().toISOString()};produtos.push(np);save();renderProd();renderProdOrc();toast('Produto cadastrado!');addCot(nome,qty,preco,np.id)}else{addCot(nome,qty,0,null)}});
+document.getElementById('btn-manter').addEventListener('click',()=>{if(pendUpd){addCot(pendUpd.nome,pendUpd.qty,pendUpd.prod.preco,pendUpd.prod.id);pendUpd=null}closeModal('modal-preco')});
+document.getElementById('btn-atualizar').addEventListener('click',()=>{if(pendUpd){const i=produtos.findIndex(p=>p.id===pendUpd.prod.id);if(i!==-1){produtos[i].preco=pendUpd.novo;produtos[i].dt=new Date().toISOString();save();renderProd();renderProdOrc();toast('Preço atualizado!')}addCot(pendUpd.nome,pendUpd.qty,pendUpd.novo,pendUpd.prod.id);pendUpd=null}closeModal('modal-preco')});
+function addCot(nome,qty,preco,prodId){const ex=cotItens.find(i=>i.prodId===prodId&&prodId);if(ex)ex.qty+=qty;else cotItens.push({nome,qty,preco,prodId});renderCotItens();cotIn.value='';cotIn.dataset.prodId='';document.getElementById('cotacao-produto-qty').value=1;document.getElementById('cotacao-produto-preco').value='';toast('Adicionado')}
+window.remCot=i=>{cotItens.splice(i,1);renderCotItens()};
+window.updQtyCot=(i,q)=>{cotItens[i].qty=Math.max(1,parseInt(q)||1);renderCotItens()};
+function renderCotItens(){const c=document.getElementById('cotacao-itens-list');if(!cotItens.length){c.innerHTML='<div class="empty-state">Adicione produtos</div>';updBtnCot();return}c.innerHTML=cotItens.map((it,i)=>{const prod=it.prodId?produtos.find(p=>p.id===it.prodId):null;const fns=prod?(prod.forns||[]).map(fid=>fornecedores.find(x=>x.id===fid)).filter(Boolean):[];return `<div class="cotacao-item"><div class="cotacao-item-info"><div class="cotacao-item-name">${it.nome}</div>${it.preco>0?`<div class="cotacao-item-price">${fmtMoney(it.preco)}</div>`:''}${fns.length?`<div style="font-size:.65rem;color:var(--purple)">📦 ${fns.map(f=>f.nome).join(', ')}</div>`:''}</div><input type="number" class="form-input cotacao-item-qty" value="${it.qty}" min="1" onchange="updQtyCot(${i},this.value)"><button class="cotacao-item-remove" onclick="remCot(${i})">×</button></div>`}).join('');updBtnCot()}
+function updBtnCot(){document.getElementById('btn-gerar-cotacao').disabled=!cotItens.length||!selFornCot.length}
+document.getElementById('btn-gerar-cotacao').addEventListener('click',()=>{if(!cotItens.length||!selFornCot.length)return;const mats=selMatCot.map(getMatLabel).join(', '),dt=new Date().toLocaleDateString('pt-BR');let h='';selFornCot.forEach((f,i)=>{h+=`<div class="cotacao-preview" style="${i>0?'margin-top:1rem;border-top:2px dashed #ccc;padding-top:1rem':''}"><h2>COTAÇÃO</h2><p><strong>Para:</strong> ${f.nome}</p>${f.atend?`<p><strong>Att:</strong> ${f.atend}</p>`:''}<p><strong>Data:</strong> ${dt}</p><p><strong>Material:</strong> ${mats}</p><table><thead><tr><th>#</th><th>Produto</th><th style="text-align:center">Qtd</th></tr></thead><tbody>${cotItens.map((it,j)=>`<tr><td>${j+1}</td><td>${it.nome}</td><td style="text-align:center">${it.qty}</td></tr>`).join('')}</tbody></table><p style="margin-top:.5rem;color:#666;font-size:.8rem">Aguardo retorno com valores. Obrigado!</p><button class="btn btn-primary btn-sm" style="margin-top:.5rem" onclick="copyCot(${i})">Copiar</button></div>`});document.getElementById('cotacao-preview').innerHTML=h;currCot={forns:selFornCot,itens:cotItens,mats:selMatCot,dt:new Date().toISOString()};openModal('modal-cotacao')});
+window.copyCot=i=>{const f=selFornCot[i],mats=selMatCot.map(getMatLabel).join(', ');let t=`COTAÇÃO\n\nPara: ${f.nome}\n`;if(f.atend)t+=`Att: ${f.atend}\n`;t+=`Data: ${new Date().toLocaleDateString('pt-BR')}\nMaterial: ${mats}\n\nITENS:\n`;cotItens.forEach((it,j)=>{t+=`${j+1}. ${it.nome} - Qtd: ${it.qty}\n`});t+=`\nAguardo retorno com valores. Obrigado!`;navigator.clipboard.writeText(t).then(()=>toast('Copiado!')).catch(()=>toast('Erro','error'))};
+document.getElementById('btn-salvar-cot').addEventListener('click',()=>{if(!currCot)return;histCot.unshift({id:Date.now().toString(),...currCot,fornNomes:currCot.forns.map(f=>f.nome)});save();toast('Cotação salva!');closeModal('modal-cotacao');cotItens=[];renderCotItens()});
+function renderHistCot(f=''){const c=document.getElementById('lista-hist-cot'),fil=histCot.filter(x=>x.fornNomes.some(n=>n.toLowerCase().includes(f.toLowerCase()))||x.itens.some(i=>i.nome.toLowerCase().includes(f.toLowerCase())));if(!fil.length){c.innerHTML='<div class="empty-state">Nenhuma cotação</div>';return}c.innerHTML=fil.map(x=>`<div class="historico-item"><div class="historico-item-header"><div class="historico-item-title">${x.fornNomes.join(', ')}</div><div class="historico-item-date">${fmtDateTime(x.dt)}</div></div><div class="historico-item-details">${x.itens.length} item(s)</div><div class="historico-item-actions"><button class="btn btn-danger btn-sm" onclick="delCot('${x.id}')">Excluir</button></div></div>`).join('')}
+window.delCot=id=>{if(!confirm('Excluir?'))return;histCot=histCot.filter(x=>x.id!==id);save();renderHistCot();toast('Excluído')};
+document.getElementById('busca-hist-cot').addEventListener('input',e=>renderHistCot(e.target.value));
+
+// ORÇAMENTO
+function renderProdOrc(f=''){const c=document.getElementById('lista-prod-orc'),fil=produtos.filter(p=>p.nome.toLowerCase().includes(f.toLowerCase())||((p.forns||[]).map(fid=>fornecedores.find(x=>x.id===fid)).filter(Boolean).some(fn=>fn.nome.toLowerCase().includes(f.toLowerCase()))));if(!fil.length){c.innerHTML='<div class="empty-state">Nenhum produto</div>';return}c.innerHTML=fil.map(p=>{const fns=(p.forns||[]).map(fid=>fornecedores.find(x=>x.id===fid)).filter(Boolean);return `<div class="item-card" style="cursor:pointer" onclick="addOrc('${p.id}')"><div class="item-info"><h4>${p.nome}</h4><p class="price">${fmtMoney(p.preco)}/${p.unid||'un'}</p>${fns.length?`<p style="font-size:.7rem;color:var(--purple)">📦 ${fns.map(f=>f.nome).join(', ')}</p>`:''}</div></div>`}).join('')}
+document.getElementById('busca-prod-orc').addEventListener('input',e=>renderProdOrc(e.target.value));
+window.addOrc=id=>{const p=produtos.find(x=>x.id===id);if(!p)return;const ex=orcItens.find(i=>i.prodId===id);if(ex)ex.qty++;else orcItens.push({prodId:id,nome:p.nome,preco:p.preco,unid:p.unid||'un',qty:1});renderOrc();calcOrc();toast('Adicionado')};
+window.remOrc=id=>{orcItens=orcItens.filter(i=>i.prodId!==id);renderOrc();calcOrc()};
+window.updQtyOrc=(id,q)=>{const it=orcItens.find(i=>i.prodId===id);if(it){it.qty=Math.max(0.1,parseFloat(q)||1);renderOrc();calcOrc()}};
+function renderOrc(){const emp=document.getElementById('orc-empty'),tbl=document.getElementById('orc-table'),tb=document.getElementById('orc-tbody'),thQtdTotal=document.getElementById('th-qtd-total'),thTotalGeral=document.getElementById('th-total-geral'),tipoCalc=document.getElementById('orc-tipo-calc').value,qtdProd=parseFloat(document.getElementById('orc-qtd').value)||1;if(!orcItens.length){emp.style.display='block';tbl.style.display='none';return}emp.style.display='none';tbl.style.display='table';const isUnitario=tipoCalc==='unitario';thQtdTotal.style.display=isUnitario?'table-cell':'none';thTotalGeral.style.display=isUnitario?'table-cell':'none';tb.innerHTML=orcItens.map(i=>{const total=i.preco*i.qty;const totalGeral=total*qtdProd;return `<tr><td>${i.nome}</td><td><input type="number" class="form-input qty-input" value="${i.qty}" min="0.1" step="0.1" onchange="updQtyOrc('${i.prodId}',this.value)"></td>${isUnitario?`<td style="color:var(--blue);font-weight:600">${(i.qty*qtdProd).toFixed(1).replace('.0','')}</td>`:''}<td style="color:var(--green)">${fmtMoney(i.preco)}</td><td style="color:var(--orange)">${fmtMoney(total)}</td>${isUnitario?`<td style="color:var(--purple);font-weight:600">${fmtMoney(totalGeral)}</td>`:''}<td><button class="btn btn-danger btn-icon" onclick="remOrc('${i.prodId}')">×</button></td></tr>`}).join('')}
+function calcOrc(){const qtd=parseFloat(document.getElementById('orc-qtd').value)||1,consPct=parseFloat(document.getElementById('c-cons-pct').value)||0,moPct=parseFloat(document.getElementById('c-mo-pct').value)||0,frete=parseMoney(document.getElementById('c-frete').value),pintura=parseMoney(document.getElementById('c-pintura').value),outras=parseMoney(document.getElementById('c-outras').value),tipoCalc=document.getElementById('orc-tipo-calc').value;const totMat=orcItens.reduce((s,i)=>s+i.preco*i.qty,0),consVal=totMat*(consPct/100),moVal=totMat*(moPct/100),custoTotal=totMat+consVal+moVal,despTot=frete+pintura+outras;let custoU,despU,valU,valTotal,margem;if(tipoCalc==='unitario'){custoU=custoTotal;despU=despTot;valU=custoU+despU;valTotal=valU*qtd;const custoRealUnit=totMat+consVal;const valorVendaComDesp=valU;margem=valorVendaComDesp>0?((valorVendaComDesp-custoRealUnit)/valorVendaComDesp)*100:0}else{valTotal=custoTotal+despTot;valU=valTotal/qtd;custoU=custoTotal/qtd;despU=despTot/qtd;const custoRealUnit=(totMat+consVal)/qtd;margem=valU>0?((valU-custoRealUnit)/valU)*100:0}document.getElementById('c-mat').textContent=fmtMoney(totMat);document.getElementById('c-cons-val').value=fmtMoney(consVal);document.getElementById('c-mo-val').value=fmtMoney(moVal);document.getElementById('c-custo').textContent=fmtMoney(custoTotal);document.getElementById('c-custo-u').textContent=fmtMoney(custoU);document.getElementById('c-desp-u').value=fmtMoney(despU);document.getElementById('c-val-u').textContent=fmtMoney(valU);document.getElementById('c-val-total').textContent=fmtMoney(valTotal);document.getElementById('c-margem').textContent=margem.toFixed(2)+'%'}
+['orc-qtd','c-cons-pct','c-mo-pct','c-frete','c-pintura','c-outras','orc-tipo-calc'].forEach(id=>{document.getElementById(id).addEventListener('input',()=>{renderOrc();calcOrc()});document.getElementById(id).addEventListener('change',()=>{renderOrc();calcOrc()})});
+document.getElementById('btn-limpar-orc').addEventListener('click',()=>{if(!confirm('Limpar?'))return;orcItens=[];document.getElementById('orc-cliente').value='';document.getElementById('orc-produto').value='';document.getElementById('orc-qtd').value=1;document.getElementById('orc-tipo-calc').value='geral';document.getElementById('c-frete').value='';document.getElementById('c-pintura').value='';document.getElementById('c-outras').value='';renderOrc();calcOrc();toast('Limpo')});
+document.getElementById('btn-salvar-orc').addEventListener('click',()=>{const cli=document.getElementById('orc-cliente').value.trim(),prod=document.getElementById('orc-produto').value.trim();if(!cli||!prod){toast('Preencha cliente e produto','error');return}if(!orcItens.length){toast('Adicione materiais','error');return}const tipoCalc=document.getElementById('orc-tipo-calc').value;const qtd=parseFloat(document.getElementById('orc-qtd').value)||1;const totMat=orcItens.reduce((s,i)=>s+i.preco*i.qty,0);const consPct=parseFloat(document.getElementById('c-cons-pct').value)||0;const moPct=parseFloat(document.getElementById('c-mo-pct').value)||0;const consVal=totMat*(consPct/100);const moVal=totMat*(moPct/100);const frete=parseMoney(document.getElementById('c-frete').value);const pintura=parseMoney(document.getElementById('c-pintura').value);const outras=parseMoney(document.getElementById('c-outras').value);const custoTotal=totMat+consVal+moVal;const despTot=frete+pintura+outras;let valU,valTotal;if(tipoCalc==='unitario'){valU=custoTotal+despTot;valTotal=valU*qtd}else{valTotal=custoTotal+despTot;valU=valTotal/qtd}const orc={id:Date.now().toString(),dt:new Date().toISOString(),cli,prod,qtd,tipoCalc,itens:[...orcItens],consPct,moPct,frete,pintura,outras,valU,valTotal};histOrc.unshift(orc);save();toast('Salvo!')});
+function renderHistOrc(f=''){const c=document.getElementById('lista-hist-orc'),fil=histOrc.filter(o=>o.cli.toLowerCase().includes(f.toLowerCase())||o.prod.toLowerCase().includes(f.toLowerCase()));if(!fil.length){c.innerHTML='<div class="empty-state">Nenhum orçamento</div>';return}c.innerHTML=fil.map(o=>`<div class="historico-item" onclick="verOrc('${o.id}')"><div class="historico-item-header"><div class="historico-item-title">${o.cli}</div><div class="historico-item-date">${fmtDateTime(o.dt)}</div></div><div class="historico-item-details">${o.prod} (${o.qtd} un)</div><div class="historico-item-value">${fmtMoney(o.valU)}/un | Total: ${fmtMoney(o.valTotal||o.valU*o.qtd)}</div><div class="historico-item-actions" onclick="event.stopPropagation()"><button class="btn btn-primary btn-sm" onclick="loadOrc('${o.id}')">Carregar</button><button class="btn btn-danger btn-sm" onclick="delOrc('${o.id}')">Excluir</button></div></div>`).join('')}
+window.verOrc=id=>{const o=histOrc.find(x=>x.id===id);if(!o)return;const totMat=o.itens.reduce((s,i)=>s+i.preco*i.qty,0),cons=totMat*(o.consPct/100),mo=totMat*(o.moPct/100),custoTot=totMat+cons+mo;document.getElementById('ver-orc-content').innerHTML=`<div style="background:#fff;color:#333;padding:1rem;border-radius:6px"><h2 style="margin-bottom:.3rem">${o.cli}</h2><p style="color:#666;font-size:.85rem">${o.prod} - ${o.qtd}un | ${fmtDate(o.dt)}</p><table style="width:100%;border-collapse:collapse;margin:.5rem 0;font-size:.8rem"><thead><tr style="background:#f5f5f5"><th style="padding:.4rem;text-align:left;border-bottom:1px solid #ddd">Material</th><th style="padding:.4rem;text-align:center">Qtd</th><th style="padding:.4rem;text-align:right">Unit.</th><th style="padding:.4rem;text-align:right">Total</th></tr></thead><tbody>${o.itens.map(i=>`<tr><td style="padding:.4rem;border-bottom:1px solid #eee">${i.nome}</td><td style="padding:.4rem;text-align:center;border-bottom:1px solid #eee">${i.qty}</td><td style="padding:.4rem;text-align:right;border-bottom:1px solid #eee">${fmtMoney(i.preco)}</td><td style="padding:.4rem;text-align:right;border-bottom:1px solid #eee">${fmtMoney(i.preco*i.qty)}</td></tr>`).join('')}</tbody></table><div style="font-size:.8rem"><div style="display:flex;justify-content:space-between"><span>Total Material:</span><span>${fmtMoney(totMat)}</span></div><div style="display:flex;justify-content:space-between"><span>Consumíveis (${o.consPct}%):</span><span>${fmtMoney(cons)}</span></div><div style="display:flex;justify-content:space-between"><span>Mão de Obra (${o.moPct}%):</span><span>${fmtMoney(mo)}</span></div><div style="display:flex;justify-content:space-between;font-weight:bold;color:#f59e0b"><span>Custo Total:</span><span>${fmtMoney(custoTot)}</span></div>${o.frete?`<div style="display:flex;justify-content:space-between"><span>Frete:</span><span>${fmtMoney(o.frete)}</span></div>`:''}</div><div style="margin-top:.7rem;padding-top:.7rem;border-top:2px solid #333;display:flex;justify-content:space-between;font-size:1.1rem;font-weight:bold"><span>VALOR UNITÁRIO:</span><span style="color:#10b981">${fmtMoney(o.valU)}</span></div></div>`;openModal('modal-ver-orc')};
+window.loadOrc=id=>{const o=histOrc.find(x=>x.id===id);if(!o)return;document.getElementById('orc-cliente').value=o.cli;document.getElementById('orc-produto').value=o.prod;document.getElementById('orc-qtd').value=o.qtd;document.getElementById('orc-tipo-calc').value=o.tipoCalc||'geral';document.getElementById('c-cons-pct').value=o.consPct;document.getElementById('c-mo-pct').value=o.moPct;document.getElementById('c-frete').value=o.frete?o.frete.toFixed(2).replace('.',','):'';document.getElementById('c-pintura').value=o.pintura?o.pintura.toFixed(2).replace('.',','):'';document.getElementById('c-outras').value=o.outras?o.outras.toFixed(2).replace('.',','):'';orcItens=o.itens.map(i=>({...i}));renderOrc();calcOrc();document.querySelector('[data-tab="novo-orcamento"]').click();toast('Carregado')};
+window.delOrc=id=>{if(!confirm('Excluir?'))return;histOrc=histOrc.filter(o=>o.id!==id);save();renderHistOrc();toast('Excluído')};
+document.getElementById('busca-hist-orc').addEventListener('input',e=>renderHistOrc(e.target.value));
+
+// Init
+document.getElementById('orc-data').valueAsDate=new Date();
+renderAll();
+
+// Iniciar sincronização
+setTimeout(async ()=>{
+    if(currentBinId){
+        await cloudLoad();
+        startSyncPolling(); // Inicia verificação automática
+    } else {
+        updateSyncUI('offline','Sem BIN configurado');
+    }
+},500);
+
+// Parar polling quando sair da página
+window.addEventListener('beforeunload', () => {
+    stopSyncPolling();
+});
+
+// Recarregar quando a página ficar visível novamente
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        cloudLoad(true); // Recarrega silenciosamente
+    }
+});
+    </script>
+</body>
+</html>
